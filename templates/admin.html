@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Panel</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style_blog.css') }}">
+</head>
+<body>
+
+<header>
+    <h1>Administration</h1>
+</header>
+
+<main>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% for category, message in messages %}
+            <div class="flash-{{ category }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endwith %}
+
+    <!-- Modifier son compte -->
+<div class="post">
+    <h2>Modifier mon compte</h2>
+    <form method="POST">
+        <input type="hidden" name="action" value="update_self">
+
+        <input type="text" name="username"
+               value="{{ session['username'] }}"
+               required><br><br>
+
+        <input type="password" name="password"
+               placeholder="Nouveau mot de passe"
+               required><br><br>
+
+        <button class="btn">Mettre à jour</button>
+    </form>
+</div>
+
+<hr>
+
+<!-- Créer utilisateur -->
+<div class="post">
+    <h2>Créer un utilisateur</h2>
+
+    <form method="POST">
+        <input type="hidden" name="action" value="create_user">
+
+        <input type="text" name="username" placeholder="Username" required><br><br>
+        <input type="password" name="password" placeholder="Mot de passe" required><br><br>
+
+        <select name="role">
+            <option value="user">Utilisateur</option>
+            <option value="admin">Admin</option>
+        </select><br><br>
+
+        <button class="btn">Créer</button>
+    </form>
+</div>
+
+    <hr>
+
+    <!-- Liste utilisateurs -->
+    <div class="post">
+        <h2>Utilisateurs existants</h2>
+        {% for user in users %}
+            <p>ID {{ user["id"] }} — {{ user["username"] }}</p>
+        {% endfor %}
+    </div>
+
+</main>
+
+</body>
+</html>

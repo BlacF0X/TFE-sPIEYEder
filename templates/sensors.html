@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sensors</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style_blog.css') }}">
+</head>
+<body>
+
+<header>
+    <h1>Vision System</h1>
+</header>
+
+<main>
+
+    <h1>🕷️ Dashboard Sensors</h1>
+
+    <div class="sensor-grid">
+
+        <div class="post">
+            <h2>Mono Gauche</h2>
+            <img src="/mono_left" class="camera">
+        </div>
+
+        <div class="post">
+            <h2>Mono Droite</h2>
+            <img src="/mono_right" class="camera">
+        </div>
+
+        <div class="post">
+            <h2>HD Centrale</h2>
+            <img src="/hd_center" class="camera">
+        </div>
+
+        <div class="post">
+            <h2>Données système</h2>
+            <p><strong>type de mouvement :</strong> <span id="sector">--</span></p>
+            <p><strong>Objets détectés :</strong> <span id="count">--</span></p>
+            <p><strong>Distance estimée :</strong> <span id="depth">--</span></p>
+            <p><strong>CPU Pi :</strong> <span id="cpu">--</span>%</p>
+        </div>
+      <div class="radar-container">
+        <div class="radar">
+        <div class="radar-ring" id="radar-ring"></div>
+        <div class="radar-center"></div>
+        </div>
+      </div>
+
+    </div>
+
+</main>
+
+<script>
+function updateSensors() {
+    fetch("/api/sensors")
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById("count").innerText = data.object_count;
+            document.getElementById("depth").innerText = data.depth;
+            document.getElementById("cpu").innerText = data.cpu_usage;
+
+            const depthElement = document.getElementById("depth");
+
+            if (data.depth === "Proche") {
+                depthElement.style.color = "red";
+            } else if (data.depth === "Moyen") {
+                depthElement.style.color = "orange";
+            } else {
+                depthElement.style.color = "green";
+            }
+            const ring = document.getElementById("radar-ring");
+
+            const angles = data.movement_angle || [];
+            const sliceWidth = 10;
+
+            let gradientParts = [];
+            let current = 0;
+            angles.sort((a, b) => a - b);
+
+            angles.forEach(angle => {
+                console.log("angles:", angle)
+                angle = 180+(angle*1.2)
+
+                let start = angle - sliceWidth / 2;
+                let end = angle + sliceWidth / 2;
+
+                // éviter valeurs négatives
+                if (start < 0) start = 0;
+                if (end > 360) end = 360;
+
+                // zone neutre avant slice
+                gradientParts.push(`#e5e7eb ${current}deg ${start}deg`);
+
+                // slice rouge
+                gradientParts.push(`rgba(255,0,0,1) ${start}deg ${end}deg`);
+
+                current = end;
+            });
+            gradientParts.push(`#e5e7eb ${current}deg 360deg`);
+
+            ring.style.background = `conic-gradient(${gradientParts.join(",")})`;
+
+            ring.style.filter = `
+                drop-shadow(0 0 8px rgba(255,0,0,0.8))
+                drop-shadow(0 0 16px rgba(255,0,0,0.5))
+            `;
+        });
+}
+
+setInterval(updateSensors, 1000);
+updateSensors();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Blog</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style_blog.css') }}">
+</head>
+
+<body>
+
+<header>
+    <h1>Placeholder</h1>
+    <a class="btn" href="/">🏠 Retour Accueil</a>
+</header>
+
+<main>
+
+    <h1>📖 Blog</h1>
+    {% if session.get("role") == "admin" %}
+    <a class="btn" href="/blog/create">➕ Nouveau post</a>
+    <a class="btn" href="/logout">Déconnexion</a>
+    {% else %}
+    <a class="btn" href="/login">Connexion admin</a>
+    {% endif %}
+
+    {% for post in posts %}
+<div class="post">
+
+    <h2>{{ post["title"] }}</h2>
+
+    <p class="author">
+        Par {{ post["username"] }} • {{ post["created"] }}
+    </p>
+
+    <p>{{ post["body"] }}</p>
+
+</div>
+{% endfor %}
+
+</main>
+
+<footer>
+    © 2026 - Corentin | Projet TFE. Tous droits réservés.
+</footer>
+
+</body>
+</html>
