@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sensors</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style_blog.css') }}">
+</head>
+<body>
+
+<header>
+    <h1>Vision System</h1>
+    <a class="btn" href="/">🏠 Retour Accueil</a>
+</header>
+
+<main>
+
+    <h1>🕷️ Dashboard Sensors</h1>
+
+    <div class="sensor-grid">
+
+        <div class="post">
+            <h2>Mono Gauche</h2>
+            <img src="/mono_left" class="camera">
+        </div>
+
+        <div class="post">
+            <h2>Mono Droite</h2>
+            <img src="/mono_right" class="camera">
+        </div>
+
+        <div class="post">
+            <h2>HD Centrale</h2>
+            <img src="/hd_center" class="camera">
+        </div>
+
+        <div class="post">
+            <h2>Données système</h2>
+            <p><strong>type de mouvement :</strong> <span id="sector">--</span></p>
+            <p><strong>Objets détectés :</strong> <span id="count">--</span></p>
+            <p><strong>Température :</strong> <span id="depth">--</span></p>
+            <p><strong>CPU Pi :</strong> <span id="cpu">--</span>%</p>
+        </div>
+      <div class="radar-container">
+        <div class="radar">
+        <div class="radar-ring" id="radar-ring"></div>
+        <div class="radar-center"></div>
+        </div>
+      </div>
+
+    </div>
+
+</main>
+
+<script>
+function updateSensors() {
+    fetch("/api/sensors")
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById("count").innerText = data.object_count;
+            document.getElementById("depth").innerText = data.depth;
+            document.getElementById("cpu").innerText = data.cpu_usage;
+
+            
+            const ring = document.getElementById("radar-ring");
+
+            const angles = data.movement_angle;
+            const sliceWidth = 10;
+
+            let segments = [];
+
+            angles.forEach(angle => {
+                if (angle !== 0 && angle !== null) {
+                    let mapped = (Number(angle) + 360) % 360;
+
+                    segments.push(`
+                        rgba(255,0,0,1) ${mapped - sliceWidth/2}deg ${mapped + sliceWidth/2}deg
+                    `);
+                }
+            });
+
+            let gradient = "conic-gradient(#e5e7eb 0deg 360deg)";
+
+            if (segments.length > 0) {
+                gradient = `conic-gradient(
+                    #e5e7eb 0deg 360deg,
+                    ${segments.join(",")}
+                )`;
+            }
+
+            ring.style.background = gradient;
+});
+}
+setInterval(updateSensors, 500);
+updateSensors();
+</script>
+
+</body>
+</html>

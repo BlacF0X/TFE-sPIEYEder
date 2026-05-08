@@ -1,0 +1,63 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    background: #fbfbfb;
+    color: white;
+    min-height: 100vh;
+}
+
+/* Header */
+
+header {
+    color: #fbfbfb;
+    border-radius: 0 0 15px 15px;
+    background-color: #023897;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+}
+
+header h1 {
+    font-size: 2em;
+}
+
+header p {
+    opacity: 0.8;
+    margin-top: 10px;
+}
+
+
+header a {
+    color: white;
+    margin-left: 15px;
+    text-decoration: none;
+}
+/* Main cards */
+
+main {
+    color:black;
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    padding: 40px;
+    flex-wrap: wrap;
+}
+
+main .btn {
+    margin: 10px;
+}
+
+/* Footer */
+
+footer {
+    text-align: center;
+    color: #6c798f;
+    padding: 20px;
+    opacity: 0.6;
+}

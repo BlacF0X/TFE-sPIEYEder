@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Accueil</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style_blog.css') }}">
+</head>
+<body>
+
+<header>
+    <h1>Mon Projet TFE</h1>
+</header>
+
+<main>
+
+    <h2>Bienvenue</h2>
+    <p>Application web développée dans le cadre du TFE.</p>
+    <div class="hub-links">
+
+        <a class="btn" href="/blog">📖 Accéder au Blog</a>
+        <a class="btn" href="/sensors">📷 Accéder au Sensors</a>
+        {% if session.get("role") == "admin" %}
+            <a class="btn" href="/admin">⚙ Panel Admin</a>
+            <a class="btn" href="/logout">🔓 Déconnexion</a>
+
+        {% else %}
+            <a class="btn" href="/login">🔐 Connexion Admin</a>
+        {% endif %}
+
+    </div>
+
+</main>
+
+</body>
+</html>
